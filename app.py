@@ -1,4 +1,3 @@
-from crypt import methods
 import pickle
 from flask import Flask,request,app,jsonify,url_for,render_template
 import numpy as np
@@ -23,6 +22,13 @@ def predict_api():
     output=model.predict(scaled_data)
     print(output[0])
     return jsonify(output[0])
+
+@app.route('/predict',methods=['POST'])
+def predict():
+    data=[float(x) for x in request.form.values()]
+    final_input=scalar.transform([data]).reshape(1,-1)
+    output=model.predict(final_input)[0]
+    return render_template('index.html',prediction_text=f'The predicted House Price is {output:.2f}.')
 
 if __name__ == "__main__":
     app.run(debug=True)
